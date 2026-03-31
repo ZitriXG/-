@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h2>Вход в систему</h2>
+    <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+        <div class="form-group">
+            <label for="login">Email или имя пользователя</label>
+            <input type="text" id="login" name="login" required autocomplete="username"
+                   value="{{ request.form.get('login', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <div class="form-group form-check">
+            <label>
+                <input type="checkbox" name="remember" {% if request.form.get('remember') == 'on' %}checked{% endif %}>
+                Запомнить меня
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Войти</button>
+    </form>
+    <p class="auth-switch">Нет аккаунта? <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}

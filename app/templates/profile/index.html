@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Мой профиль{% endblock %}
+{% block content %}
+<div class="profile-header">
+    <div class="avatar-circle">
+        {{ current_user.get_full_name()[0].upper() }}
+    </div>
+    <div class="profile-info">
+        <h2>{{ current_user.get_full_name() }}</h2>
+        <p class="text-muted">@{{ current_user.username }}</p>
+        {% if current_user.bio %}
+            <p>{{ current_user.bio }}</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('profile.settings') }}" class="btn btn-outline">Редактировать профиль</a>
+</div>
+
+<div class="profile-details card">
+    <h3>Информация</h3>
+    <dl class="detail-list">
+        <dt>Email</dt>
+        <dd>{{ current_user.email }}</dd>
+        {% if current_user.phone %}
+        <dt>Телефон</dt>
+        <dd>{{ current_user.phone }}</dd>
+        {% endif %}
+        {% if current_user.birth_date %}
+        <dt>Дата рождения</dt>
+        <dd>{{ current_user.birth_date.strftime('%d.%m.%Y') }}</dd>
+        {% endif %}
+        <dt>Профиль создан</dt>
+        <dd>{{ current_user.created_at.strftime('%d.%m.%Y') }}</dd>
+        <dt>Видимость профиля</dt>
+        <dd>{{ 'Публичный' if current_user.profile_public else 'Приватный' }}</dd>
+    </dl>
+</div>
+{% endblock %}

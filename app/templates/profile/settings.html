@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block title %}Настройки профиля{% endblock %}
+{% block content %}
+<div class="settings-layout">
+    <!-- Боковая навигация -->
+    <aside class="settings-sidebar">
+        <h3>Настройки</h3>
+        <nav class="settings-nav">
+            <a href="#profile" class="settings-nav-link" data-tab="profile">
+                <span class="nav-icon">👤</span> Личные данные
+            </a>
+            <a href="#account" class="settings-nav-link" data-tab="account">
+                <span class="nav-icon">🔑</span> Аккаунт
+            </a>
+            <a href="#password" class="settings-nav-link" data-tab="password">
+                <span class="nav-icon">🔒</span> Пароль
+            </a>
+            <a href="#notifications" class="settings-nav-link" data-tab="notifications">
+                <span class="nav-icon">🔔</span> Уведомления
+            </a>
+            <a href="#danger" class="settings-nav-link settings-nav-danger" data-tab="danger">
+                <span class="nav-icon">⚠️</span> Удаление аккаунта
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Основной контент -->
+    <div class="settings-content">
+
+        <!-- Личные данные -->
+        <section class="settings-section" id="profile">
+            <h2 class="settings-section-title">Личные данные</h2>
+            <p class="settings-section-desc">Обновите своё имя, фото и другую публичную информацию.</p>
+            <form method="POST" action="{{ url_for('profile.update_profile') }}" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">Имя</label>
+                        <input type="text" id="first_name" name="first_name" maxlength="64"
+                               value="{{ current_user.first_name or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Фамилия</label>
+                        <input type="text" id="last_name" name="last_name" maxlength="64"
+                               value="{{ current_user.last_name or '' }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bio">О себе</label>
+                    <textarea id="bio" name="bio" rows="3" maxlength="500"
+                              placeholder="Расскажите о себе...">{{ current_user.bio or '' }}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Телефон</label>
+                        <input type="tel" id="phone" name="phone" maxlength="20"
+                               value="{{ current_user.phone or '' }}"
+                               placeholder="+7 (999) 000-00-00">
+                    </div>
+                    <div class="form-group">
+                        <label for="birth_date">Дата рождения</label>
+                        <input type="date" id="birth_date" name="birth_date"
+                               value="{{ current_user.birth_date.strftime('%Y-%m-%d') if current_user.birth_date else '' }}">
+                    </div>
+                </div>
+                <div class="form-group form-check">
+                    <label class="toggle-label">
+                        <input type="checkbox" name="profile_public"
+                               {% if current_user.profile_public %}checked{% endif %}>
+                        <span class="toggle-switch"></span>
+                        Публичный профиль
+                    </label>
+                    <small class="form-hint">Если выключено, ваш профиль будут видеть только вы.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Аккаунт -->
+        <section class="settings-section" id="account">
+            <h2 class="settings-section-title">Данные аккаунта</h2>
+            <p class="settings-section-desc">Измените имя пользователя или адрес электронной почты.</p>
+            <form method="POST" action="{{ url_for('profile.update_account') }}" novalidate>
+                <div class="form-group">
+                    <label for="username">Имя пользователя</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">@</span>
+                        <input type="text" id="username" name="username" required minlength="3" maxlength="64"
+                               value="{{ current_user.username }}" autocomplete="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required maxlength="120"
+                           value="{{ current_user.email }}" autocomplete="email">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Обновить аккаунт</button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Пароль -->
+        <section class="settings-section" id="password">
+            <h2 class="settings-section-title">Изменение пароля</h2>
+            <p class="settings-section-desc">Рекомендуем использовать надёжный уникальный пароль.</p>
+            <form method="POST" action="{{ url_for('profile.change_password') }}" novalidate>
+                <div class="form-group">
+                    <label for="current_password">Текущий пароль</label>
+                    <input type="password" id="current_password" name="current_password" required
+                           autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="new_password">Новый пароль</label>
+                    <input type="password" id="new_password" name="new_password" required minlength="6"
+                           autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Подтвердите новый пароль</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required
+                           autocomplete="new-password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Изменить пароль</button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Уведомления -->
+        <section class="settings-section" id="notifications">
+            <h2 class="settings-section-title">Уведомления</h2>
+            <p class="settings-section-desc">Управляйте тем, какие уведомления вы хотите получать.</p>
+            <form method="POST" action="{{ url_for('profile.update_notifications') }}">
+                <div class="form-group form-check">
+                    <label class="toggle-label">
+                        <input type="checkbox" name="email_notifications"
+                               {% if current_user.email_notifications %}checked{% endif %}>
+                        <span class="toggle-switch"></span>
+                        Email-уведомления
+                    </label>
+                    <small class="form-hint">Получать уведомления на {{ current_user.email }}.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Удаление аккаунта -->
+        <section class="settings-section settings-danger" id="danger">
+            <h2 class="settings-section-title danger-title">Удаление аккаунта</h2>
+            <p class="settings-section-desc">
+                После удаления аккаунта все ваши данные будут безвозвратно удалены.
+                Это действие <strong>нельзя отменить</strong>.
+            </p>
+            <button type="button" class="btn btn-danger" id="delete-account-btn">
+                Удалить мой аккаунт
+            </button>
+
+            <!-- Подтверждение удаления -->
+            <div class="danger-confirm" id="delete-confirm" style="display:none;">
+                <p><strong>Введите пароль для подтверждения:</strong></p>
+                <form method="POST" action="{{ url_for('profile.delete_account') }}">
+                    <div class="form-group">
+                        <input type="password" name="password" required placeholder="Ваш пароль"
+                               autocomplete="current-password">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-danger">Подтвердить удаление</button>
+                        <button type="button" class="btn btn-outline" id="cancel-delete-btn">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}
